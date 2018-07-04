@@ -1,0 +1,72 @@
+<link rel="stylesheet" type="text/css" href="/node_modules/primeicons/primeicons.css" />
+<link rel="stylesheet" type="text/css" href="/node_modules/primeng/resources/themes/omega/theme.css" />
+<link rel="stylesheet" type="text/css" href="/node_modules/primeng/resources/primeng.min.css" />
+<h2>
+  My Prime Heroes
+</h2>
+<p-table #dt [columns]="cols" [value]="heroes">
+
+  <ng-template pTemplate="caption">
+    <div style="text-align: right">
+      <i class="pi pi-users"></i>
+      <input type="text" pInputText size="50" placeholder="Hero" (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="header" let-hero>
+    <tr>
+      <th>ID
+        <p-sortIcon [field]="hero.id"></p-sortIcon></th>
+      <th>Name
+        <p-sortIcon [field]="hero.name"></p-sortIcon>
+      </th>
+      <th>Ability
+        <p-sortIcon [field]="hero.ability"></p-sortIcon>
+      </th>
+      <th>Action</th>
+    </tr>
+  </ng-template>
+
+
+  <ng-template pTemplate="body" let-rowData let-hero let-columns="columns">
+    <tr>
+      <td *ngFor="let col of columns">
+        {{rowData[col.field]}}
+      </td>
+      <td>
+        <button class="delete"  type="button" pButton icon="pi pi-times"
+                (click)="delete(hero)" label="Delete">
+        </button>
+      </td>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="summary" let-rowData>
+    <div style="text-align:left">
+      <button type="button" pButton icon="pi pi-plus" (click)="showDialogToAdd()" label="Add">
+      </button>
+    </div>
+  </ng-template>
+
+</p-table>
+
+<p-dialog header="Add Hero " [(visible)]="displayDialog" [responsive]="true" showEffect="fade" [modal]="true" [width]="300">
+  <div class="ui-g ui-fluid" >
+    <div class="ui-g-12">
+        <label>Hero Name:
+          <input #heroName />
+        </label>
+      <br>
+      <label>Hero Action:
+        <input #heroAbility />
+      </label>
+    </div>
+  </div>
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <button type="button" pButton icon="pi pi-check"
+              (click)="add(heroName.value, heroAbility.value); heroName.value='';heroAbility.value=''; displayDialog=false" label="Save">
+      </button>
+    </div>
+  </p-footer>
+</p-dialog>

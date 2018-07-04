@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Hero } from '../hero';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
-import { HeroService }  from '../hero.service';
+import { HeroService } from '../hero.service';
 
 @Component({
   selector: 'app-hero-detail',
@@ -30,7 +30,7 @@ export class HeroDetailComponent implements OnInit {
       .subscribe(hero => this.hero = hero);
   }
   goBack(): void {
-  this.location.back();
-}
+    this.location.back();
+  }
   @Input() hero: Hero;
 }

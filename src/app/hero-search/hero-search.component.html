@@ -1,13 +1,21 @@
+<link rel="stylesheet" type="text/css" href="/node_modules/primeicons/primeicons.css" />
+<link rel="stylesheet" type="text/css" href="/node_modules/primeng/resources/themes/omega/theme.css" />
+<link rel="stylesheet" type="text/css" href="/node_modules/primeng/resources/primeng.min.css" />
 <div id="search-component">
-  <h4>Hero Search</h4>
+  <div>
+    <div class="ui-inputgroup">
+      <span class="ui-inputgroup-addon"><i class="pi pi-users"></i></span>
+      <input #searchBox  type="text" pInputText placeholder="Hero"(keyup)="search(searchBox.value)" />
+    </div>
+  </div>
 
-  <input #searchBox id="search-box" (keyup)="search(searchBox.value)" />
 
   <ul class="search-result">
     <li *ngFor="let hero of heroes$ | async" >
-      <a routerLink="/detail/{{hero.id}}">
+      <a routerLink="/detail/{{hero.id}}" >
         {{hero.name}}
       </a>
     </li>
   </ul>
 </div>
+
