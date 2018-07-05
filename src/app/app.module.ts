@@ -17,6 +17,12 @@ import { TableModule} from 'primeng/table';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
+import {ConfirmDialogModule} from 'primeng/confirmdialog';
+import {GrowlModule} from 'primeng/growl';
+
+import {MessageService} from 'primeng/components/common/messageservice';
+import {ConfirmationService} from 'primeng/api';
+
 
 
 @NgModule({
@@ -39,11 +45,16 @@ import { DialogModule } from 'primeng/dialog';
     InputTextModule,
     DialogModule,
     ButtonModule,
+    ConfirmDialogModule,
+    GrowlModule,
     HttpClientInMemoryWebApiModule.forRoot(
       InMemoryDataService, { dataEncapsulation: false }
     )
   ],
-  providers: [],
+  providers: [
+    ConfirmationService,
+    MessageService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

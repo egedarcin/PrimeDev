@@ -4,22 +4,24 @@
 <h2>
   My Prime Heroes
 </h2>
-<p-table #dt [columns]="cols" [value]="heroes" selectionMode="single" [(selection)]="selectedHero">
+<p-table #dt [columns]="cols" [value]="heroes" selectionMode="single" [(selection)]="selectedHero"
+         [resizableColumns]="true" [reorderableColumns]="true">
 
   <ng-template pTemplate="caption">
     <div style="text-align: left">
       My Prime Heroes
     </div>
     <div style="text-align: right">
-      <i class="pi pi-users"></i>
-      <input type="text" pInputText size="50" placeholder="Hero" (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+      <i class="pi pi-users" style="margin-right: 3px"></i>
+      <input type="text" pInputText placeholder="Hero"
+             (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:auto">
     </div>
   </ng-template>
 
   <ng-template pTemplate="header" let-hero>
     <tr>
-
-      <th *ngFor="let col of hero" [pSortableColumn]="col.field">
+      <th style="width:2em"></th>
+      <th *ngFor="let col of hero" [pSortableColumn]="col.field" pResizableColumn pReorderableColumn>
         {{col.header}}
         <p-sortIcon [field]="col.field"></p-sortIcon>
       </th>
@@ -29,14 +31,17 @@
   </ng-template>
 
 
-  <ng-template pTemplate="body" let-rowData let-hero let-columns="columns">
-    <tr [pSelectableRow]="rowData">
-      <td *ngFor="let col of columns">
+  <ng-template pTemplate="body" let-rowData let-hero let-columns="columns" let-index="rowIndex">
+    <tr [pSelectableRow]="rowData" [pReorderableRow]="index">
+      <td>
+        <i class="pi pi-bars" pReorderableRowHandle></i>
+      </td>
+      <td *ngFor="let col of columns" (click)="showDialogToDisp()">
         {{rowData[col.field]}}
       </td>
       <td>
         <button class="delete"  type="button" pButton icon="pi pi-times"
-                (click)="delete(hero)" label="Delete">
+                (click)="confirm(hero)" label="Delete" >
         </button>
       </td>
     </tr>
@@ -44,42 +49,55 @@
 
   <ng-template pTemplate="summary" let-rowData>
     <div style="text-align:left">
-      <button type="button" pButton icon="pi pi-plus" (click)="showDialogToAdd()" label="Add">
-      </button>
+      <button type="button" pButton icon="pi pi-plus" (click)="showDialogToDisp()" label="Add" >
+    </button>
     </div>
   </ng-template>
-
 </p-table>
 
-<p-dialog header="Add Hero " [(visible)]="displayDialogAdd" [responsive]="true" showEffect="fade" [modal]="true" [width]="300">
-  <div class="ui-g ui-fluid" >
-    <div class="ui-g-12">
+
+<p-dialog header="Hero Details" [(visible)]="displayDialogDisp" [responsive]="true"
+          showEffect="fade" [modal]="true" [width]="300">
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-12"  *ngIf="selectedHero; else noSelectedHero">
+      <label>Name:
+        <input [(ngModel)]="selectedHero.name" placeholder="name"/>
+      </label>
+      <br>
+      <br>
+      <label>Ability:
+        <input [(ngModel)]="selectedHero.ability" placeholder="ability"/>
+      </label>
+    </div>
+    <p-footer >
+      <div class="ui-dialog-buttonpane ui-helper-clearfix" *ngIf="selectedHero; else noSelectedHero">
+        <button type="button" pButton icon="pi pi-check"
+                (click)="save(); displayDialogDisp=false" label="Save">
+        </button>
+      </div>
+    </p-footer>
+
+    <ng-template #noSelectedHero>
+      <div>
         <label>Hero Name:
           <input #heroName />
         </label>
-      <br>
-      <label>Hero Action:
-        <input #heroAbility />
-      </label>
-    </div>
+        <br>
+        <label>Hero Ability:
+          <input #heroAbility />
+        </label>
+      </div>
+      <p-footer>
+        <div class="ui-dialog-buttonpane ui-helper-clearfix">
+          <button type="button" pButton icon="pi pi-check"
+                  (click)="add(heroName.value, heroAbility.value); heroName.value='';
+                  heroAbility.value=''; displayDialogDisp=false" label="Save">
+          </button>
+        </div>
+      </p-footer>
+    </ng-template>
   </div>
-  <p-footer>
-    <div class="ui-dialog-buttonpane ui-helper-clearfix">
-      <button type="button" pButton icon="pi pi-check"
-              (click)="add(heroName.value, heroAbility.value); heroName.value='';heroAbility.value=''; displayDialogAdd=false" label="Save">
-      </button>
-    </div>
-  </p-footer>
 </p-dialog>
 
-<p-dialog header="Hero Details" [(visible)]="displayDialogDisp" [responsive]="true" showEffect="fade" [modal]="true" [width]="300">
-  <div class="ui-g ui-fluid" >
-    <div class="ui-g-12">
-
-    </div>
-  </div>
-  <p-footer>
-
-
-  </p-footer>
-</p-dialog>
+<p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle" width="425"></p-confirmDialog>
+<p-growl [value]="msgs"></p-growl>

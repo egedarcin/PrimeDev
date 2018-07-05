@@ -1,7 +1,9 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { Hero } from '../hero';
 import { HeroService } from '../hero.service';
 import {Message} from 'primeng/api';
+
+import {ConfirmationService} from 'primeng/api';
 
 @Component({
   selector: 'app-primetable',
@@ -15,8 +17,10 @@ export class PrimetableComponent implements OnInit {
   displayDialogDisp: boolean;
   selectedHero: Hero;
   cols: any[];
+  msgs: Message[] = [];
 
-  constructor(private heroService: HeroService) { }
+  constructor(private heroService: HeroService,
+              private confirmationService: ConfirmationService) { }
 
   ngOnInit() {
     this.getHeroes();
@@ -44,20 +48,30 @@ export class PrimetableComponent implements OnInit {
   this.heroes = this.heroes.filter(h => h !== hero);
   this.heroService.deleteHero(hero).subscribe();
   }
-  showDialogToAdd() {
-    this.displayDialogAdd = true;
-  }
-  /*
-  showDialogToDisp() {
-    this.displayDialogDisp = true;
-  }
   save(): void {
-    this.heroService.updateHero(this.hero)
+    this.heroService.updateHero(this.selectedHero)
       .subscribe();
   }
 
-  getHero(): void {
-
+  showDialogToDisp() {
+    if (!this.selectedHero) {
+      this.displayDialogDisp = true;
+    }
   }
-  */
+
+  confirm(hero: Hero): void {
+    this.confirmationService.confirm({
+      message: 'Are you sure that you want to delete the hero?',
+      header: 'Confirmation of Deletion',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.delete(hero);
+        this.msgs = [{severity: 'info', summary: 'Confirmed', detail: 'Hero Deleted.'}];
+      },
+      reject: () => {
+        this.msgs = [{severity: 'warn', summary: 'Rejected', detail: 'You have rejected'}];
+      }
+    });
+  }
+
 }
